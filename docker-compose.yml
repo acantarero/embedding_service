@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  web:
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+      args:
+        NLTK_DATA: ${NLTK_DATA}
+    env_file:
+      - .env
+    volumes:
+      - .:/embedding_service/
+      - ./.cache/torch/:/.cache/torch/
+      - ./.cache/huggingface/:/.cache/huggingface/
+      - ./data/nltk_data:/data/nltk_data
+    ports:
+      - "8000:8000"
+    command: sh -c "
+      uvicorn app:app --reload --host 0.0.0.0"
+
+volumes:
+  tmpfs:
+    driver: local
+    driver_opts:
+      o: "size=20g,uid=1000"
+      device: tmpfs
+      type: tmpfs
