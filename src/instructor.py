@@ -6,10 +6,6 @@ from numpy import ndarray
 
 from src.embed import Embed
 
-class ModelSize(Enum):
-    BASE = 1
-    LARGE = 2
-    XL = 3
 
 class InstructorEmbedding(Embed):
     """Instructor embedding is an open source model that generates
@@ -25,21 +21,19 @@ class InstructorEmbedding(Embed):
     """
 
     def __init__(self, 
-                 size: ModelSize, 
-                 document_instruction: str, 
-                 query_instruction: str) -> None:
+                 model: str = "hkunlp/instructor-base", 
+                 document_instruction: str = None, 
+                 query_instruction: str = None) -> None:
+        """Leave option to globally initialize with instructions
+        """
+
+        self.model_name = model
+        self.dimension = 768
 
         logger.info("Initializing InstructorEmbedding")
-        if size == ModelSize.BASE:
-            self.model_name = 'hkunlp/instructor-base'
-        elif size == ModelSize.LARGE:
-            self.model_name = 'hkunlp/instructor-large'
-            self.dimension = 768
-        elif size == ModelSize.XL:
-            self.model_name = 'hkunlp/instructor-xl'
-        else:
-            raise ValueError("Invalid model size.")
-        
+        if self.model_name not in ["hkunlp/instructor-base", "hkunlp/instructor-large", "hkunlp/instructor-xl"]:
+            raise ValueError("Invalid model. Must be one of 'hkunlp/instructor-base', 'hkunlp/instructor-large', 'hkunlp/instructor-xl'.")
+
         self.model = INSTRUCTOR(self.model_name)
         logger.info(f"Initialized InstructorEmbedding with model: {self.model_name}")
 
@@ -53,10 +47,10 @@ class InstructorEmbedding(Embed):
         self.document_instruction = document_instruction
         self.query_instruction = query_instruction
 
-    def embed(self, text: str) -> ndarray:
-        value = self.model.encode([[self.document_instruction, text]])
+    def embed(self, text: str, document_instruction: str = None) -> ndarray:
+        value = self.model.encode([[document_instruction, text]])
         return value
 
-    def embed_query(self, query: str) -> ndarray:
-        result = self.model.encode([[self.query_instruction, query]])
+    def embed_query(self, query: str, query_instruction: str = None) -> ndarray:
+        result = self.model.encode([[query_instruction, query]])
         return result

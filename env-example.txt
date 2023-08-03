@@ -3,3 +3,9 @@ TRANSFORMERS_CACHE=/.cache/huggingface/
 TORCH_HOME=/.cache/torch/
 
 NLTK_DATA=/data/nltk_data/
+
+# options:
+#   - hkunlp/instructor-base
+#   - hkunlp/instructor-large
+#   - hkunlp/instructor-xl
+INSTRUCTOR_MODEL=hkunlp/instructor-xl

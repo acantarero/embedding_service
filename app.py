@@ -7,16 +7,12 @@ from src.sentence_chunker import SentenceChunker
 from src.instructor import InstructorEmbedding, ModelSize
 from src.embed import EmbeddedVector
 
+from settings import INSTRUCTOR_MODEL
+
 app = FastAPI()
 
 # init embedding model globally at startup as it takes a while to load
-# since document and que
-embedding_model = InstructorEmbedding(
-    ModelSize.XL,
-    document_instruction="represent the news document for retrieval",
-    query_instruction="represent the news headline for retrieving support documents",
-)
-
+embedding_model = InstructorEmbedding(INSTRUCTOR_MODEL)
 
 class EmbeddingRequest(BaseModel):
     text: str
@@ -33,7 +29,11 @@ def health_check():
 # TODO: heavy compute task, should be async
 #       option: put into pulsar/astra streaming write job to process stream
 @app.post("/embed")
-def embed(data: EmbeddingRequest):
+def embed(
+    data: EmbeddingRequest, 
+    doc_instruction: str = "represent the document for retrieval",
+    query_instruction: str = "represent the query for retrieving similar documents"
+):
     chunk_start = time()
     chunker = SentenceChunker(max_size=512)
     chunks = chunker.chunk(data.text)
@@ -44,11 +44,19 @@ def embed(data: EmbeddingRequest):
     vectors = []
     embedding_start = time()
     for chunk in chunks:
-        vectors.append(EmbeddedVector(embedding_model.embed(chunk), data.document_id, chunk))
+        vectors.append(EmbeddedVector(embedding_model.embed(chunk, doc_instruction), 
+                                      data.document_id, 
+                                      chunk))
     embedding_end = time()
 
     logger.info(f"embedding took {embedding_end - embedding_start} seconds for {len(chunks)} chunks.")
 
-     # write to DSE
-    # return number of chunks written to DSE 
-    return {"status": "ok"}
+    # assemble to return
+    return_vectors = []
+    for v in vectors:
+        return_vectors.append({
+            "vector": v.vector.tolist(),
+            "text": v.text,
+        })
+
+    return {"results": return_vectors}
