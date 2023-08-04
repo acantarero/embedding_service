@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from time import time
 
 from src.sentence_chunker import SentenceChunker
-from src.instructor import InstructorEmbedding, ModelSize
+from src.instructor import InstructorEmbedding
 from src.embed import EmbeddedVector
 
 from settings import INSTRUCTOR_MODEL
