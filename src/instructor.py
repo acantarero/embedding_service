@@ -47,8 +47,8 @@ class InstructorEmbedding(Embed):
         self.document_instruction = document_instruction
         self.query_instruction = query_instruction
 
-    def embed(self, text: str, document_instruction: str = None) -> ndarray:
-        value = self.model.encode([[document_instruction, text]])
+    def embed(self, text: str, instruction: str = None) -> ndarray:
+        value = self.model.encode([[instruction, text]])
         return value
 
     def embed_query(self, query: str, query_instruction: str = None) -> ndarray:

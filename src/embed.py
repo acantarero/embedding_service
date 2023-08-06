@@ -4,7 +4,7 @@ from collections import namedtuple
 from numpy import ndarray
 
 # document_key should be a unique identifier that can be generated from the source dataset
-EmbeddedVector = namedtuple("EmbeddedVector", ["vector", "document_key", "text"])
+EmbeddedVector = namedtuple("EmbeddedVector", ["vector", "text"])
 
 class Embed(ABC):
 

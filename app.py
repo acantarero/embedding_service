@@ -16,9 +16,6 @@ embedding_model = InstructorEmbedding(INSTRUCTOR_MODEL)
 
 class EmbeddingRequest(BaseModel):
     text: str
-    document_id: str
-    metadata: dict
-
 
 @app.get("/health")
 def health_check():
@@ -31,8 +28,7 @@ def health_check():
 @app.post("/embed")
 def embed(
     data: EmbeddingRequest, 
-    doc_instruction: str = "represent the document for retrieval",
-    query_instruction: str = "represent the query for retrieving similar documents"
+    instruction: str = "represent the document for retrieval",
 ):
     chunk_start = time()
     chunker = SentenceChunker(max_size=512)
@@ -44,8 +40,7 @@ def embed(
     vectors = []
     embedding_start = time()
     for chunk in chunks:
-        vectors.append(EmbeddedVector(embedding_model.embed(chunk, doc_instruction), 
-                                      data.document_id, 
+        vectors.append(EmbeddedVector(embedding_model.embed(chunk, instruction),  
                                       chunk))
     embedding_end = time()
 
