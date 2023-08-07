@@ -4,7 +4,5 @@ nltk                    # natural language toolkit
 numpy                   # numerical computation library
 uvicorn[standard]       # ASGI server
 
-dse-driver              # database
-
 InstructorEmbedding     # instructor embedding model
 sentence_transformers   # improperly managed dependency for instructor embedding models
