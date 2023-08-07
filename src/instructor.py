@@ -3,6 +3,7 @@ from loguru import logger
 
 from InstructorEmbedding import INSTRUCTOR
 from numpy import ndarray
+import torch
 
 from src.embed import Embed
 
@@ -36,6 +37,10 @@ class InstructorEmbedding(Embed):
 
         self.model = INSTRUCTOR(self.model_name)
         logger.info(f"Initialized InstructorEmbedding with model: {self.model_name}")
+
+        if torch.cuda.is_available():
+            self.model.cuda()
+            logger.info("CUDA is available. Moved instructor model to use GPU.")
 
         """Instructions to instructor models should include:
         - domain 
