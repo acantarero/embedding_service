@@ -38,6 +38,11 @@ class InstructorEmbedding(Embed):
         self.model = INSTRUCTOR(self.model_name)
         logger.info(f"Initialized InstructorEmbedding with model: {self.model_name}")
 
+
+        logger.info(f"Torch is using CUDA: {torch.cuda.is_available()}")
+        logger.info(f"Torch CUDA device count: {torch.cuda.device_count()}")
+        logger.info(f"Torch CUDA device name: {torch.cuda.get_device_name(0)}")
+
         if torch.cuda.is_available():
             self.model.cuda()
             logger.info("CUDA is available. Moved instructor model to use GPU.")
