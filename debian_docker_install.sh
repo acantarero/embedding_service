@@ -18,7 +18,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce docker-ce-cli c
 
 # install cuda libraries
 curl https://raw.githubusercontent.com/GoogleCloudPlatform/compute-gpu-installation/main/linux/install_gpu_driver.py --output install_gpu_driver.py
-python3 install_gpu_driver.py
+sudo python3 install_gpu_driver.py
 
 
 # fix for docker compose to access GPUs
