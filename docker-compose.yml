@@ -2,7 +2,7 @@ version: "3.9"
 services:
   web:
     build:
-      dockerfile: ./Dockerfile_cuda
+      dockerfile: ./Dockerfile
       context: .
       args:
         NLTK_DATA: ${NLTK_DATA}
@@ -15,8 +15,16 @@ services:
       - ./data/nltk_data:/data/nltk_data
     ports:
       - "8000:8000"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
     command: sh -c "
       uvicorn app:app --reload --host 0.0.0.0"
+
 
 volumes:
   tmpfs:
