@@ -2,7 +2,7 @@ version: "3.9"
 services:
   web:
     build:
-      dockerfile: ./Dockerfile
+      dockerfile: ./Dockerfile_cuda
       context: .
       args:
         NLTK_DATA: ${NLTK_DATA}
