@@ -46,6 +46,8 @@ class InstructorEmbedding(Embed):
         if torch.cuda.is_available():
             self.model.cuda()
             logger.info("CUDA is available. Moved instructor model to use GPU.")
+        else:
+            logger.info("CUDA is not available. Using CPU.")
 
         """Instructions to instructor models should include:
         - domain 
