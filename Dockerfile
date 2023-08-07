@@ -1,4 +1,3 @@
-# use this dockerfile to build and run instructor on a CPU
 FROM python:3.11.3-slim
 ENV PYTHONUNBUFFERED 1
 
