@@ -4,6 +4,8 @@ ENV PYTHONUNBUFFERED 1
 # to be overwritten by .env
 ARG NLTK_DATA="set"
 
+RUN apt-get -y update; apt-get -y install curl
+
 RUN pip install pip==23.2.1
 RUN pip install pip-tools==7.1.0
 
