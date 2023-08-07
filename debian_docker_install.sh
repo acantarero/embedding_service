@@ -36,5 +36,7 @@ sudo groupadd docker
 sudo usermod -aG docker $USER
 newgrp docker
 
+sleep 7
 sudo systemctl daemon-reload
+sleep 7
 sudo systemctl restart docker
