@@ -15,3 +15,7 @@ echo \
 sudo apt-get update
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nvidia-docker2
+sudo systemctl daemon-reload
+sudo systemctl restart docker
