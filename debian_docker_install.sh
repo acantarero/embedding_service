@@ -16,6 +16,11 @@ sudo apt-get update
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
+# install cuda libraries
+curl https://raw.githubusercontent.com/GoogleCloudPlatform/compute-gpu-installation/main/linux/install_gpu_driver.py --output install_gpu_driver.py
+python3 install_gpu_driver.py
+
+
 # fix for docker compose to access GPUs
 curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | \
   sudo apt-key add -
@@ -26,12 +31,10 @@ sudo apt-get update
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nvidia-docker2
 
-curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
-
-curl -s -L https://nvidia.github.io/libnvidia-container/experimental/ubuntu22.04/libnvidia-container.list | sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
-         sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
-
-sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
+# run docker without sudo, may require log out and login again
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker
 
 sudo systemctl daemon-reload
 sudo systemctl restart docker
