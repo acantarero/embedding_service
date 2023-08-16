@@ -29,6 +29,8 @@ filelock==3.12.2
     #   transformers
 fsspec==2023.6.0
     # via huggingface-hub
+gunicorn==21.2.0
+    # via -r requirements.in
 h11==0.14.0
     # via uvicorn
 httptools==0.6.0
@@ -71,6 +73,7 @@ numpy==1.25.2
     #   transformers
 packaging==23.1
     # via
+    #   gunicorn
     #   huggingface-hub
     #   transformers
 pillow==10.0.0
