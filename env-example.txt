@@ -9,7 +9,3 @@ NLTK_DATA=/data/nltk_data/
 #   - hkunlp/instructor-large
 #   - hkunlp/instructor-xl
 INSTRUCTOR_MODEL=hkunlp/instructor-xl
-
-# 1 - Nvidia GPUs
-# 0 - CPU
-USE_GPU=0
