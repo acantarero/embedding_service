@@ -40,8 +40,9 @@ class InstructorEmbedding(Embed):
 
 
         logger.info(f"Torch is using CUDA: {torch.cuda.is_available()}")
-        logger.info(f"Torch CUDA device count: {torch.cuda.device_count()}")
-        logger.info(f"Torch CUDA device name: {torch.cuda.get_device_name(0)}")
+        if torch.cuda.is_available():
+            logger.info(f"Torch CUDA device count: {torch.cuda.device_count()}")
+            logger.info(f"Torch CUDA device name: {torch.cuda.get_device_name(0)}")
 
         if torch.cuda.is_available():
             self.model.cuda()
@@ -60,9 +61,9 @@ class InstructorEmbedding(Embed):
         self.query_instruction = query_instruction
 
     def embed(self, text: str, instruction: str = None) -> ndarray:
-        value = self.model.encode([[instruction, text]])
+        value = self.model.encode([[instruction, text]]).tolist()
         return value
 
     def embed_query(self, query: str, query_instruction: str = None) -> ndarray:
-        result = self.model.encode([[query_instruction, query]])
+        result = self.model.encode([[query_instruction, query]]).tolist()
         return result
