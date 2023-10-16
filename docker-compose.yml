@@ -16,19 +16,20 @@ services:
     ports:
       - "8000:8000"
     restart: on-failure 
-    # if you do not want to use GPU, comment out the deploy section
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-    # TODO: multiple workers results in multiple instantiations of embedding model which won't fit on GPU
+    # uncomment to deploy on GPU
+    #deploy:
+    #  resources:
+    #    reservations:
+    #      devices:
+    #        - driver: nvidia
+    #          count: 1
+    #          capabilities: [gpu]
+    #TODO: multiple workers results in multiple instantiations of embedding model which won't fit on GPU
+    #possible solution: https://github.com/tiangolo/fastapi/issues/2425#issuecomment-734790381
     command: sh -c "
       gunicorn --workers 1 -k uvicorn.workers.UvicornWorker app:app --bind 0.0.0.0:8000"
 
-
+# TODO: validate if this is still required
 volumes:
   tmpfs:
     driver: local

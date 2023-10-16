@@ -15,43 +15,40 @@ app = FastAPI()
 embedding_model = InstructorEmbedding(INSTRUCTOR_MODEL)
 
 class EmbeddingRequest(BaseModel):
-    text: str
+    input: list[str]
+    model: str
 
 @app.get("/health")
 def health_check():
-    # TODO: check connection to DSE cluster is OK
     return {"status": "ok"}
 
-
 # TODO: heavy compute task, should be async
-#       option: put into pulsar/astra streaming write job to process stream
-@app.post("/embed")
+@app.post("/embeddings")
 def embed(
     data: EmbeddingRequest, 
-    instruction: str = "represent the document for retrieval",
 ):
-    chunk_start = time()
-    chunker = SentenceChunker(max_size=512)
-    chunks = chunker.chunk(data.text)
-    chunk_end = time()
-
-    logger.info(f"chunking took {chunk_end - chunk_start} seconds")
+    # needed for instruction embedding models
+    instruction = "represent the document for retrieval"
 
     vectors = []
     embedding_start = time()
-    for chunk in chunks:
-        vectors.append(EmbeddedVector(embedding_model.embed(chunk, instruction),  
-                                      chunk))
+    # match openai spec (for langchain compatibility):
+    # https://platform.openai.com/docs/api-reference/embeddings/object
+    for idx, v in enumerate(data.input):
+        vectors.append({
+            "object": "embedding",
+            "embedding": EmbeddedVector(
+                embedding_model.embed(v, instruction), v),
+            "index": idx,
+        })
     embedding_end = time()
 
-    logger.info(f"embedding took {embedding_end - embedding_start} seconds for {len(chunks)} chunks.")
+    logger.info(f"embedding took {embedding_end - embedding_start} seconds for {len(data.input)} documents.")
 
-    # assemble to return
-    return_vectors = []
-    for v in vectors:
-        return_vectors.append({
-            "vector": v.vector.tolist(),
-            "text": v.text,
-        })
-
-    return {"results": return_vectors}
+    # match openai spec (for langchain compatibility):
+    # https://platform.openai.com/docs/api-reference/embeddings/create
+    return {
+        "object": "list",
+        "data": vectors,
+        "model": data.model,
+    } 
